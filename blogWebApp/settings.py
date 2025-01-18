@@ -23,11 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG')) == "1"     # "1" == ture
+DEBUG = os.getenv('DEBUG', "False").lower() in ["true", "1", "yes"]
 
-ALLOWED_HOSTS = ["localhost", "*"]
-if not DEBUG:
-    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # Default for development
+if not DEBUG :  # For production
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+
 
 
 # Application definition
@@ -93,11 +94,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': "django.db.backends.postgresql_psycopg2",
-        'HOST': os.environ.get('SUPABASE_HOST'),
-        'NAME': os.environ.get('SUPABASE_NAME'),
-        'USER': os.environ.get('SUPABASE_USER'),
-        'PASSWORD': os.environ.get('SUPABASE_PASSWORD'),
-        'PORT': os.environ.get('SUPABASE_PORT'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'PORT': os.environ.get('DATABASE_PORT'),
     }
 }
 
@@ -136,20 +137,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/staticfiles/'
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory for collected static files in production
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Additional directories for static files
+
+# Media files (User-uploaded files)
 MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'  # Cloud storage for media
+MEDIA_ROOT = BASE_DIR / 'media'  # Local fallback (optional, depending on usage)
 
-from os import path
-
-MEDIA_ROOT = path.join(BASE_DIR, 'media')
-STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-STATICFILES_DIRS  = [
-    path.join(BASE_DIR, 'static')
-]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -162,9 +160,9 @@ LOGOUT_REDIRECT_URL ='home'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 

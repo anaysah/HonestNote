@@ -51,7 +51,7 @@
 .main-box-body pre::after{
     content: "code";
     position: absolute;
-    top: -50%;
+    top: -20px;
     right: 0px;
 }
 

@@ -115,7 +115,7 @@
                   <img src="{{ post.author.profile.profile_img.url }}" alt="" class="profile-img me-1 card border-2">
                   <small class=" col text-color" align="right">{{ post.author.get_full_name }}</small>
                 </div>
-                <a href="{% url 'blogs_by_category' post.category|slugify %}" class="d-flex align-items-center gap-1">
+                <a href="{% url 'blogPage' post.slug %}" class="d-flex align-items-center gap-1">
                   <span class="lh-1 readmore-btn">Read More</span><i class="fa-solid fa-arrow-right"></i>
                 </a>
               </div>
