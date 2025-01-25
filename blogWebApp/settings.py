@@ -26,8 +26,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', "False").lower() in ["true", "1", "yes"]
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # Default for development
-if not DEBUG :  # For production
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# if not DEBUG :  # For production
+ALLOWED_HOSTS += os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 
