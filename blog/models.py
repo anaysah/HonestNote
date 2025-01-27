@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from datetime import datetime, date
+from django.core.exceptions import ValidationError
 
 
 
@@ -89,3 +90,25 @@ class JoinUsSubmission(models.Model):
 
     def __str__(self):
         return self.name
+
+class WebsiteSettings(models.Model):
+    website_name = models.CharField(max_length=255, default="My Blog")
+    about_text = models.TextField(default="About this website...")
+
+    social_media_links = models.JSONField(default=dict, blank=True, null=True)  # Store all social media links as a JSON object
+
+    is_newsletter_enabled = models.BooleanField(default=False)
+    # Add more fields as needed
+
+    def __str__(self):
+        return self.website_name
+
+    class Meta:
+        verbose_name = "Website Settings"
+        verbose_name_plural = "Website Settings"
+
+    def save(self, *args, **kwargs):
+        if not self.pk and WebsiteSettings.objects.exists():
+            # If an instance already exists, prevent creating a new one
+            raise ValidationError("Only one instance of WebsiteSettings is allowed.")
+        return super().save(*args, **kwargs)

@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
     {% block title %}
-    Honest Notex
+    {{ website_settings.website_name }}
     {% endblock title %}
   </title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -30,34 +30,41 @@
 
 <body>
   <div class="side-collapse-menu d-flex flex-column p-5" id="mySidenav">
-    <div class="side-menu-head d-flex justify-content-between">
-      <span class="d-flex align-items-center">Navigation</span>
-      <span onclick="toggleSideMenu()" class=""><i class="fa-solid fa-xmark fa-xl"></i></span>
-    </div>
-    <div class="side-menu-body">
+    {% comment %} <div class="side-menu-head d-flex justify-content-between"> {% endcomment %}
+      {% comment %} <span class="d-flex align-items-center">Navigation</span> {% endcomment %}
+      <span onclick="toggleSideMenu()" class="d-flex justify-content-end"><i class="fa-solid fa-xmark fa-xl"></i></span>
+    {% comment %} </div>   {% endcomment %}
+    <div class="side-menu-body mt-3">
       <ul class="side-menu-wrap list-unstyled pt-1">
         <li class="active"><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="#">Travel</a></li>
-        <li><a href="#">Food</a></li>
-        <li><a href="#">Technology</a></li>
-        <li><a href="#">Business</a></li>
-      </ul>
-      <p>Perspiciatis hic praesentium nesciunt. Et neque a dolorum <a href="#0">voluptatem</a> porro iusto sequi veritatis libero enim. Iusto id suscipit veritatis neque reprehenderit.</p>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul> 
+      <p>{{ website_settings.about_text }}</p>
     </div>
     <div>
+      {% if website_settings.social_media_links %}
       <ul class="list-unstyled d-flex align-items-center gap-3 m-0">
+        {% if website_settings.social_media_links.twitter|default:False %}
         <li><a href="#"><span class="icon-twitter"><i class="fa-brands fa-twitter"></i></span></a></li>
+        {% endif %}
+        {% if website_settings.social_media_links.facebook|default:False %}
         <li><a href="#"><span class="icon-facebook"><i class="fa-brands fa-facebook-f"></i></span></a></li>
+        {% endif %}
+        {% if website_settings.social_media_links.instagram|default:False %}
         <li><a href="#"><span class="icon-instagram"><i class="fa-brands fa-instagram"></i></span></a></li>
-
+        {% endif %}
       </ul>
+      {% endif %}
+
     </div>
   </div>
   <div id="header">
     <div class="container-fluid header-box">
       <div class="row d-flex align-items-center">
-        <div class="col-md-6 text-center order-1 order-md-2 mb-3 mb-md-0">
-          <a href="{% url 'home' %}" class="logo m-0 text-uppercase">Honest Note</a>
+        <div class="col-md-6 text-center order-1 order-md-2 mb-md-0">
+          <a href="{% url 'home' %}" class="logo m-0 text-uppercase">{{ website_settings.website_name }}</a>
         </div>
         <div class="col-md-3 order-3 order-md-1">
           <form method="GET" action="{% url 'search_results' %}" class="search-form">
@@ -69,18 +76,22 @@
             </div>
           </form>
         </div>
-        <div class="col-md-3 text-end order-2 order-md-3 mb-3 mb-md-0">
+        <div class="col-md-3 text-end order-2 order-md-3 mb-3 mb-md-0 d-flex justify-content-end">
           <div class="d-flex justify-content-between align-items-center">
+            {% if website_settings.social_media_links|length > 0 %} #check if the dict is empty
             <ul class="list-unstyled d-flex align-items-center gap-3 m-0">
+              {% if website_settings.social_media_links.twitter|default:False %}
               <li><a href="#"><span class="icon-twitter"><i class="fa-brands fa-twitter"></i></span></a></li>
+              {% endif %}
+              {% if website_settings.social_media_links.facebook|default:False %}
               <li><a href="#"><span class="icon-facebook"><i class="fa-brands fa-facebook-f"></i></span></a></li>
+              {% endif %}
+              {% if website_settings.social_media_links.instagram|default:False %}
               <li><a href="#"><span class="icon-instagram"><i class="fa-brands fa-instagram"></i></span></a></li>
-
+              {% endif %}
             </ul>
-            <!-- <a href="#" class="burger ms-auto float-end site-menu-toggle js-menu-toggle d-inline-block"
-            data-toggle="collapse" data-target="#main-navbar">
-            <span></span>
-          </a> -->
+            {% endif %}
+            
             <span class="d-flex gap-3 justify-content-between align-items-center">
               <span onclick="changeTheme()" class="changeTheme-btn">
                 <i class="fa-solid fa-circle-half-stroke fa-xl changeTheme-icon"></i>
@@ -103,7 +114,7 @@
 
   </div>
 
-
+  {% if website_settings.is_newsletter_enabled %}
   <section class="py-5 text-bg-warning mt-5" id="newsletter-box">
     <div class="container">
       <div class="row d-flex justify-content-center">
@@ -128,6 +139,7 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
   <!-- <div class="side-footer p-4">
     <div class="container">
@@ -152,24 +164,23 @@
     </div>
   </div> -->
 
-  <div class="end-footer container-fluid px-0 py-5 bg-darken">
+  <hr class="mt-5">
+
+  <div class="end-footer container-fluid px-0  bg-darken">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-9 text-center">
-          <div class="footer-site-logo mb-4">
-            <h3><Strong><a href="#">Honest Note</a></Strong></h3>
+          <div class="footer-site-logo mt-3">
+            <h3><Strong><a href="#">{{ website_settings.website_name }}</a></Strong></h3>
           </div>
-          <ul class="list-unstyled nav-links mb-3 d-flex justify-content-center flex-wrap gap-3">
+          <ul class="list-unstyled nav-links mt-3 d-flex justify-content-center flex-wrap gap-3">
             <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Press</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Legal</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
 
-          <div id="joinus-btn-box" class="d-flex justify-content-center align-items-center mb-4">
+          {% comment %} <div id="joinus-btn-box" class="d-flex justify-content-center align-items-center ">
             <a class="d-flex">
               <div class="d-flex flex-column align-items-start joinus-box-text py-1 px-2">
                 <h6 class="mb-0"><strong>Join</strong></h6>
@@ -179,16 +190,24 @@
                 <i class="fa-solid fa-users fa-xl"></i>
               </div>
             </a>
-          </div>
+          </div> {% endcomment %}
 
+          {% if website_settings.social_media_links %}
           <div class="social mb-4">
             <h6>Stay in touch</h6>
             <ul class="list-unstyled d-flex justify-content-center align-items-center flex-wrap gap-3">
+              {% if website_settings.social_media_links.twitter|default:False %}
               <li><a href="#"><span class="icon-twitter"><i class="fa-brands fa-twitter"></i></span></a></li>
+              {% endif %}
+              {% if website_settings.social_media_links.facebook|default:False %}
               <li><a href="#"><span class="icon-facebook"><i class="fa-brands fa-facebook-f"></i></span></a></li>
+              {% endif %}
+              {% if website_settings.social_media_links.instagram|default:False %}
               <li><a href="#"><span class="icon-instagram"><i class="fa-brands fa-instagram"></i></span></a></li>
+              {% endif %}
             </ul>
           </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -198,7 +217,7 @@
     <div class="container-xl">
       <div class="row">
         <div class="col-md-12 text-center">
-          <p class="mb-0" style="font-size: 14px;">Copyright ©
+          <p class="mb-2" style="font-size: 14px;">Copyright ©
             <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
             <script>document.write(new Date().getFullYear());</script>All rights reserved | 
             This website made with 🤎 and django

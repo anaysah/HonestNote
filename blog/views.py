@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView , DetailView, CreateView, UpdateView, DeleteView
 from django.utils.safestring import SafeText
 from django.db.models import Q
-from .models import Post, Category, FeaturedBlog, JoinUsSubmission
+from .models import Post, Category, FeaturedBlog, JoinUsSubmission, WebsiteSettings
 from .forms import  CommentForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -35,6 +35,16 @@ class homeView(ListView):
         if page is None or page == '1':
             featured_blogs = FeaturedBlog.objects.all()
             context['featured_blogs'] = featured_blogs
+
+        # Add WebsiteSettings to the context
+        website_settings = WebsiteSettings.objects.first()  # Get the first (and likely only) instance
+        if not website_settings:
+        # Create a default instance if none exists
+            website_settings = WebsiteSettings.objects.create(
+                website_name="My Blog",
+                about_text="About this website...",
+            )
+        context['website_settings'] = website_settings
 
         return context
 
